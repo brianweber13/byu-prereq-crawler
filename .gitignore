@@ -1,2 +1,6 @@
 # vim tmp files
 *.swp
+
+# folders that aren't source code
+playground/
+tmp/
