@@ -37,6 +37,8 @@ while read line; do
     search_url="https://catalog.byu.edu/search/site/$line"
     echo "$search_url"
     wget -O tmp/search-result.html "$search_url"
+
+    # find link to actual course page
   fi
 done <$1
 
