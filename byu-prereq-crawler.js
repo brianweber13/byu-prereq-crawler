@@ -22,8 +22,19 @@ function parseClassList(inputString) {
     } else if ( inputStringArray[i].length === 0) {
       inputStringArray.splice(i, 1);
     } else {
+      inputStringArray[i].trim();
+      inputStringArray[i] = inputStringArray[i].replace(/ /g, '+');
       i++;
     }
   }
   return inputStringArray;
+}
+
+function getClassInfo(){
+}
+
+function getClassPage(){
+}
+
+function getClassSearchResultPage(){
 }
