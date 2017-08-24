@@ -36,5 +36,20 @@ function getClassInfo(){
 function getClassPage(){
 }
 
-function getClassSearchResultPage(){
+function getClassSearchResultPage(pageUrl){
 }
+
+function httpGetWebpageAsyncWithProxy(pageUrl){
+  const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+  var xmlHttp = new XMLHttpRequest();
+
+  xmlHttp.onload = () => {
+    console.log('success! ', xmlHttp.responseText);
+  };
+  xmlHttp.onerror = () => {
+    console.log('error: ', xmlHttp);
+  };
+  xmlHttp.open("GET", proxyUrl + pageUrl, true); // true for asynchronous 
+  xmlHttp.send(null);
+}
+
