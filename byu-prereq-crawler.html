@@ -10,7 +10,39 @@
   </head>
 
   <body>
-    <textarea id='class-list-input' rows="40" cols="50"># Input all the classes you need to take, one on each line, and I will output each class and a list of what classes it's a prerequisite for. Lines starting with '#' will be ignored.</textarea>
+    <textarea id='class-list-input' rows="40" cols="50"># Input all the classes you need to take, one on each line, and I will output each class and a list of what classes it's a prerequisite for.
+
+# Lines starting with '#' will be ignored.
+# the class name must exactly match the name of the class in the BYU course catalog    
+# Below is an example of what this list can look like.
+CS 142
+C S 235
+C S 236
+C S 240
+EC EN 191
+EC EN 220
+EC EN 240
+EC EN 323
+EC EN 330
+EC EN 340
+EC EN 380
+EC EN 390
+EC EN 391
+EC EN 475
+EC EN 476
+MATH 112
+MATH 113
+MATH 313
+MATH 334
+PHSCS 121
+PHSCS 220
+STAT 201
+CHEM 105
+ENGL 312
+EC EN 424
+EC EN 425
+CS 465
+CS 460</textarea>
     <button type="button" onclick="outputPrereqList()">Submit</button>
     <div id='error-output-container'></div>
   </body>
