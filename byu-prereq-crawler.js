@@ -40,7 +40,8 @@ function createHtmlDocFromString(htmlDocString){
 }
 
 function parseClassInfoFromClassPage(htmlDocString){
-  console.log('class page we found: ', htmlDocString);
+  // console.log('class page we found: ', htmlDocString);
+  var htmlDoc = createHtmlDocFromString(htmlDocString);
 }
 
 function parseClassPageFromSearchResultPage(className, htmlDocString){
@@ -60,8 +61,7 @@ function parseClassPageFromSearchResultPage(className, htmlDocString){
       return;
     }
   }
-  // TODO: make prettier.
-  alert('we couldn\'t find the class \'' + className + '\'. Ensure that it\'s the exact name of the class in the byu catalog and try again!');
+  error('we couldn\'t find the class \'' + className + '\'. Ensure that it\'s the exact name of the class in the byu catalog and try again!');
 }
 
 function getClassSearchResultPage(className){
@@ -82,9 +82,8 @@ function httpGetWebpageAsyncWithProxy(pageUrl, callback){
     callback(xmlHttp.responseText);
   };
   xmlHttp.onerror = () => {
-    // TODO: alert user
     console.log('error: ', xmlHttp);
-    alert('There was a problem retrieving ' + pageUrl + '. Make sure you\'re connected to the internet and that the website we\'re trying to retrieve is available. You can also hit Ctrl-Shift-I (Cmd-Opt-I on mac) and check the console for more info.');
+    error('There was a problem retrieving ' + pageUrl + '. Make sure you\'re connected to the internet and that the website we\'re trying to retrieve is available. You can also hit Ctrl-Shift-I (Cmd-Opt-I on mac) and check the console for more info.');
   };
   xmlHttp.open("GET", proxyUrl + pageUrl, true); // true for asynchronous 
   xmlHttp.send(null);
