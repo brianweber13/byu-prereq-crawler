@@ -33,18 +33,48 @@ function parseClassList(inputString) {
   return inputStringArray;
 }
 
+// callback will be given an array of strings containing the prerequisites for the 
+// given class.
+function getPrerequisitesForClass(className, callback){
+  getClassSearchResultPage(className, classSearchResultPage => {
+    parseClassPageFromSearchResultPage(className, classSearchResultPage, classPage => {
+      parseClassPrerequisitesFromClassPage(className, classPage, callback);
+    });
+  });
+}
+
 function createHtmlDocFromString(htmlDocString){
   var htmlDoc = document.createElement( 'html' );
   htmlDoc.innerHTML = htmlDocString;
   return htmlDoc;
 }
 
-function parseClassInfoFromClassPage(htmlDocString){
+function parseClassPrerequisitesFromClassPage(className, htmlDocString, callback){
   // console.log('class page we found: ', htmlDocString);
   var htmlDoc = createHtmlDocFromString(htmlDocString);
+  let courseData = htmlDoc.querySelectorAll('tr.course-data-row');
+  let prerequisiteDataRow;
+  for(courseDataRow of courseData){
+    if(courseDataRow.innerHTML.match(/.*prerequisites.*/i)){
+      prerequisiteDataRow = courseDataRow;
+      console.log('breaking.... ', className);
+      console.log('courseDataRow ', courseDataRow);
+      break theloop;
+    }
+    console.log('not breaking... ', className);
+    console.log('courseDataRow ', courseDataRow);
+    error('we couldn\'t find prerequisite data for the class \'' + className + '\'.');
+  }
+  let prerequisiteLinks = prerequisiteDataRow.querySelectorAll('a');
+  let prerequisites = [];
+  for(prerequisiteLink of prerequisiteLinks){
+    prerequisites.push(prerequisiteLink.innerHTML);
+  }
+  callback(prerequisites);
+  // console.log('prerequisites for ' + className + ' are ', prerequisites);
 }
 
-function parseClassPageFromSearchResultPage(className, htmlDocString){
+function parseClassPageFromSearchResultPage(className, htmlDocString, callback){
   var htmlDoc = createHtmlDocFromString(htmlDocString);
   let linksToResults = htmlDoc.querySelector('ol.search-results').querySelectorAll('a');
   // let searchResults = htmlDoc.querySelectorAll('li.search-result');
@@ -53,10 +83,11 @@ function parseClassPageFromSearchResultPage(className, htmlDocString){
 
   for(foundLink of linksToResults){
     if(foundLink.innerHTML.match(new RegExp(className, 'i'))){
-      console.log('found it! ', foundLink);
-      console.log('found href: ', foundLink.getAttribute('href'));
+      // console.log('found it! ', foundLink);
+      // console.log('found href: ', foundLink.getAttribute('href'));
       httpGetWebpageAsyncWithProxy(foundLink.getAttribute('href'), response => {
-        parseClassInfoFromClassPage(response);
+        callback(response);
+        // parseClassPrerequisitesFromClassPage(className, response, callback);
       });
       return;
     }
@@ -64,10 +95,14 @@ function parseClassPageFromSearchResultPage(className, htmlDocString){
   error('we couldn\'t find the class \'' + className + '\'. Ensure that it\'s the exact name of the class in the byu catalog and try again!');
 }
 
-function getClassSearchResultPage(className){
+// this function is the first in a chain that will eventually get the prerequisites
+// for a given class
+function getClassSearchResultPage(className, callback){
   let classNameForSearch = className.replace(/ /g, '+');
-  httpGetWebpageAsyncWithProxy('https://catalog.byu.edu/search/site/' + classNameForSearch, response => {
-    parseClassPageFromSearchResultPage(className, response);
+  httpGetWebpageAsyncWithProxy('https://catalog.byu.edu/search/site/' + classNameForSearch,
+    response => {
+      // parseClassPageFromSearchResultPage(className, response, callback);
+      callback(response);
   });
   // inputStringArray[i] = inputStringArray[i].replace(/ /g, '+');
 }
