@@ -4,3 +4,4 @@
 # folders that aren't source code
 playground/
 tmp/
+node_modules/
