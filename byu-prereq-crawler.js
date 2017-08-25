@@ -54,16 +54,15 @@ function parseClassPrerequisitesFromClassPage(className, htmlDocString, callback
   var htmlDoc = createHtmlDocFromString(htmlDocString);
   let courseData = htmlDoc.querySelectorAll('tr.course-data-row');
   let prerequisiteDataRow;
-  for(courseDataRow of courseData){
-    if(courseDataRow.innerHTML.match(/.*prerequisites.*/i)){
-      prerequisiteDataRow = courseDataRow;
-      console.log('breaking.... ', className);
-      console.log('courseDataRow ', courseDataRow);
-      break theloop;
+  // for(courseDataRow of courseData){
+  for(let i = 0; i < courseData.length; i++){
+    if(courseData[i].innerHTML.match(/.*prerequisites.*/i)){
+      prerequisiteDataRow = courseData[i];
+      break;
     }
-    console.log('not breaking... ', className);
-    console.log('courseDataRow ', courseDataRow);
-    error('we couldn\'t find prerequisite data for the class \'' + className + '\'.');
+    if ( i === courseData.length ){
+      error('we couldn\'t find prerequisite data for the class \'' + className + '\'.');
+    }
   }
   let prerequisiteLinks = prerequisiteDataRow.querySelectorAll('a');
   let prerequisites = [];
