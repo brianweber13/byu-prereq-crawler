@@ -1,19 +1,62 @@
 function outputPrereqList() {
+  console.log('FYI: there are lots of GET ERR_FILE_NOT_FOUND errors that will show up in the console. This is normal, as making a get request to BYU websites causes the website to expect BYU images on the server, even though they do not exist here.');
   let classList = document.querySelector("textarea#class-list-input").value;
   classList = parseClassList(classList);
-  console.log('processed class list: ', classList);
+  // console.log('processed class list: ', classList);
 
+  // TODO: add loading bar.
+  // .map returns a new array that is the result of doing something to every item
+  // in the array it is called on. So in this case, I'll get an array of promises
+  // that the browser will getPrerequistesForClass (one promise per item)
   let classInfoArray = [];
-  for(className of classList){
-  }
+  let requests = classList.map(className => {
+    return new Promise(resolve  => {
+      getPrerequisitesForClass(className, prereqList => {
+        classInfoArray.push({
+          className: className,
+          prerequisites: prereqList
+        });
+        console.log('success processing \'' + className +'\'.');
+        resolve('success processing \'' + className +'\'.');
+      });
+    });
+  });
+
+  // TODO: URGENT: TODO: this is the next step
+  // I think this doesn't succeed because some of the promises fail.... find a way to do something
+  // with existing results
+  Promise.all(requests).then(() => {
+    console.log('done getting class prereq info! Here\'s what we found:', classInfoArray);
+  });
+
+  // let classInfoArray = [];
+  // for(className of classList){
+  //   getPrerequisitesForClass(className, prereqList => {
+  //     // TODO: add loading bar.
+
+  //     classInfoArray.push({
+  //       className: className,
+  //       prerequisites: prereqList
+  //     });
+  //     console.log('classInfoArray after processing ' + className, classInfoArray);
+  //   });
+  // }
 }
 
 function error(errorMessage) {
+  alertOnPage(errorMessage, 'error-output-text');
+}
+
+function info(infoMessage) {
+  alertOnPage(infoMessage, 'info-output-text');
+}
+
+function alertOnPage(message, htmlClass){
   let errorOutputContainer = document.querySelector('div#error-output-container').innerHTML; 
   let date = new Date();
   let time = date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
   document.querySelector('div#error-output-container').innerHTML = 
-    ('<p>' + time + ' ' + errorMessage + '</p>') + errorOutputContainer;
+    ('<p class=' + htmlClass + '>' + time + ' ' + message + '</p>') + errorOutputContainer;
 }
 
 function parseClassList(inputString) {
@@ -36,6 +79,8 @@ function parseClassList(inputString) {
 // callback will be given an array of strings containing the prerequisites for the 
 // given class.
 function getPrerequisitesForClass(className, callback){
+  // TODO: use promises here?? See the link below:
+  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Using_promises
   getClassSearchResultPage(className, classSearchResultPage => {
     parseClassPageFromSearchResultPage(className, classSearchResultPage, classPage => {
       parseClassPrerequisitesFromClassPage(className, classPage, callback);
@@ -102,7 +147,7 @@ function getClassSearchResultPage(className, callback){
     response => {
       // parseClassPageFromSearchResultPage(className, response, callback);
       callback(response);
-  });
+    });
   // inputStringArray[i] = inputStringArray[i].replace(/ /g, '+');
 }
 
