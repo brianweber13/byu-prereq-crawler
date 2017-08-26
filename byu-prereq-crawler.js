@@ -1,5 +1,6 @@
 function outputPrereqList() {
   console.log('FYI: there are lots of GET ERR_FILE_NOT_FOUND errors that will show up in the console. This is normal, as making a get request to BYU websites causes the website to expect BYU images on the server, even though they do not exist here.');
+  info('Beginning to process classes....');
   let classList = document.querySelector("textarea#class-list-input").value;
   classList = parseClassList(classList);
   // console.log('processed class list: ', classList);
