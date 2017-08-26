@@ -1,12 +1,13 @@
 let getClassPrereqsAsyncFailureCount = 0;
 
 function outputPrereqList() {
+  // TODO: fix the GET ERR_FILE_NOT_FOUND errors so they just don't show up
   console.log('FYI: there are lots of GET ERR_FILE_NOT_FOUND errors that ' +
     'will show up in the console. This is normal, as making a get request ' +
     'to BYU websites causes the website to expect BYU images on the server, ' +
     'even though they do not exist here.');
   info('Beginning to process classes....');
-  let classList = document.querySelector("textarea#class-list-input").value;
+  let classList = document.querySelector('textarea#class-list-input').value;
   classList = parseClassList(classList);
   // console.log('processed class list: ', classList);
 
@@ -66,31 +67,34 @@ function outputPrereqList() {
       classInfoArray.push({
         className: localClassName,
         prerequisites: prereqList,
-        isPrerequisiteFor: []
+        isPrerequisiteFor: [],
       });
       // console.log('classInfoArray after processing ' + localClassName,
       //   classInfoArray);
-      if(classInfoArray.length === classList.length - getClassPrereqsAsyncFailureCount){
+      if (classInfoArray.length === classList.length -
+        getClassPrereqsAsyncFailureCount) {
         // DONE! Processed everything we can.
-        if(getClassPrereqsAsyncFailureCount !== 0){
+        if (getClassPrereqsAsyncFailureCount !== 0) {
           error('failed to process ' + getClassPrereqsAsyncFailureCount +
             ' classes. Generating results for the classes we successfully ' +
             'got information for.');
         }
 
         // console.log('before adding \'isPrerequisiteFor\':', classInfoArray);
-        classInfoArray = addIsPrerequisiteForPropertyToClassObjects(classInfoArray);
+        classInfoArray =
+          addIsPrerequisiteForPropertyToClassObjects(classInfoArray);
         // console.log('after adding \'isPrerequisiteFor\':', classInfoArray);
       }
     },
-    // TODO: it'd probably be good to move all the error reports to this
-    // part. That way the other functions will be more modular, and the
-    // medium of the error handling can be input the callback
-    failureReason => {
-      // TODO: 
-      // error(failureReason);
-      getClassPrereqsAsyncFailureCount++;
-    });
+      // TODO: it'd probably be good to move all the error reports to this
+      // part. That way the other functions will be more modular, and the
+      // medium of the error handling can be input the callback
+      () => {
+      // (failureReason) => {
+        // TODO: 
+        // error(failureReason);
+        getClassPrereqsAsyncFailureCount++;
+      });
   }
 }
 
@@ -102,20 +106,23 @@ function info(infoMessage) {
   alertOnPage(infoMessage, 'info-output-text');
 }
 
-function alertOnPage(message, htmlClass){
-  let errorOutputContainer = document.querySelector('div#error-output-container').innerHTML;
+function alertOnPage(message, htmlClass) {
+  let errorOutputContainer = document
+    .querySelector('div#error-output-container').innerHTML;
   let date = new Date();
-  let time = date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
+  let time = date.getHours() + ':' + date.getMinutes() + ':' +
+    date.getSeconds();
   document.querySelector('div#error-output-container').innerHTML =
-    ('<p class=' + htmlClass + '>' + time + ' ' + message + '</p>') + errorOutputContainer;
+    ('<p class=' + htmlClass + '>' + time + ' ' + message + '</p>')
+    + errorOutputContainer;
 }
 
 function parseClassList(inputString) {
-  var inputString = inputString.replace(/\r\n/g, '\n');
-  var inputString = inputString.replace(/\r/g, '\n');
+  inputString = inputString.replace(/\r\n/g, '\n');
+  inputString = inputString.replace(/\r/g, '\n');
   inputStringArray = inputString.split('\n');
-  for (let i = 0; i < inputStringArray.length;){
-    if(inputStringArray[i].charAt(0) === '#'){
+  for (let i = 0; i < inputStringArray.length;) {
+    if (inputStringArray[i].charAt(0) === '#') {
       inputStringArray.splice(i, 1);
     } else if ( inputStringArray[i].length === 0) {
       inputStringArray.splice(i, 1);
@@ -129,86 +136,98 @@ function parseClassList(inputString) {
 
 // TODO: convert async funtions to use promises instead. This might be helpful: 
 // https://softwareengineering.stackexchange.com/questions/302455/is-there-really-a-fundamental-difference-between-callbacks-and-promises
-// successCallback will be given an array of strings containing the prerequisites for the 
-// given class.
-function getPrerequisitesForClass(className, successCallback, failureCallback){
+// successCallback will be given an array of strings containing the
+// prerequisites for the given class.
+function getPrerequisitesForClass(className, successCallback, failureCallback) {
   // TODO: use promises here?? See the link below:
   // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Using_promises
   getClassSearchResultPage(className, (classSearchResultPage) => {
-    parseClassPageFromSearchResultPage(className, classSearchResultPage, (classPage) => {
-      parseClassPrerequisitesFromClassPage(className, classPage, successCallback, failureCallback);
-    }, failureCallback);
+    parseClassPageFromSearchResultPage(className, classSearchResultPage,
+      (classPage) => {
+        parseClassPrerequisitesFromClassPage(className, classPage,
+          successCallback, failureCallback);
+      }, failureCallback);
   }, failureCallback);
 }
 
-function createHtmlDocFromString(htmlDocString){
-  var htmlDoc = document.createElement( 'html' );
+function createHtmlDocFromString(htmlDocString) {
+  let htmlDoc = document.createElement( 'html' );
   htmlDoc.innerHTML = htmlDocString;
   return htmlDoc;
 }
 
-function parseClassPrerequisitesFromClassPage(className, htmlDocString, successCallback, failureCallback){
+function parseClassPrerequisitesFromClassPage(className, htmlDocString,
+  successCallback, failureCallback) {
   // console.log('class page we found: ', htmlDocString);
-  var htmlDoc = createHtmlDocFromString(htmlDocString);
+  let htmlDoc = createHtmlDocFromString(htmlDocString);
   let courseData = htmlDoc.querySelectorAll('tr.course-data-row');
   let prerequisiteDataRow;
   // for(courseDataRow of courseData){
-  for(let i = 0; i < courseData.length; i++){
-    if(courseData[i].innerHTML.match(/.*prerequisites.*/i)){
+  for (let i = 0; i < courseData.length; i++) {
+    if (courseData[i].innerHTML.match(/.*prerequisites.*/i)) {
       prerequisiteDataRow = courseData[i];
       break;
     }
-    if ( i === courseData.length ){
-      errorMessage = 'we couldn\'t find prerequisite data for the class \'' + className + '\'.';
+    if ( i === courseData.length ) {
+      errorMessage = 'we couldn\'t find prerequisite data for the class \''
+        + className + '\'.';
       error(errorMessage);
       failureCallback(errorMessage);
     }
   }
   let prerequisiteLinks = prerequisiteDataRow.querySelectorAll('a');
   let prerequisites = [];
-  for(prerequisiteLink of prerequisiteLinks){
+  for (prerequisiteLink of prerequisiteLinks) {
     prerequisites.push(prerequisiteLink.innerHTML);
   }
   successCallback(prerequisites);
   // console.log('prerequisites for ' + className + ' are ', prerequisites);
 }
 
-function parseClassPageFromSearchResultPage(className, htmlDocString, successCallback, failureCallback){
-  var htmlDoc = createHtmlDocFromString(htmlDocString);
-  let linksToResults = htmlDoc.querySelector('ol.search-results').querySelectorAll('a');
+function parseClassPageFromSearchResultPage(className, htmlDocString,
+  successCallback, failureCallback) {
+  let htmlDoc = createHtmlDocFromString(htmlDocString);
+  let linksToResults = htmlDoc.querySelector('ol.search-results')
+    .querySelectorAll('a');
   // let searchResults = htmlDoc.querySelectorAll('li.search-result');
-  // let firstSearchResult = htmlDoc.querySelector("li.search-result:first-child");
+  // let firstSearchResult = htmlDoc
+  //   .querySelector("li.search-result:first-child");
   // console.log("search results", searchResults);
 
-  for(foundLink of linksToResults){
-    if(foundLink.innerHTML.match(new RegExp(className, 'i'))){
+  for (foundLink of linksToResults) {
+    if (foundLink.innerHTML.match(new RegExp(className, 'i'))) {
       // console.log('found it! ', foundLink);
       // console.log('found href: ', foundLink.getAttribute('href'));
-      httpGetWebpageAsyncWithProxy(foundLink.getAttribute('href'), (response) => {
-        successCallback(response);
-        // parseClassPrerequisitesFromClassPage(className, response, callback);
-      });
+      httpGetWebpageAsyncWithProxy(foundLink.getAttribute('href'),
+        (response) => {
+          successCallback(response);
+          // parseClassPrerequisitesFromClassPage(className, response,
+          // callback);
+        });
       return;
     }
   }
-  errorMessage = 'we couldn\'t find the class \'' + className + '\'. Ensure that it\'s the exact name of the class in the byu catalog and try again!';
+  errorMessage = 'we couldn\'t find the class \'' + className
+    + '\'. Ensure that it\'s the exact name of the class in the'
+    + 'byu catalog and try again!';
   error(errorMessage);
   failureCallback(errorMessage);
 }
 
-// this function is the first in a chain that will eventually get the prerequisites
-// for a given class
+// this function is the first in a chain that will eventually get 
+// the prerequisites for a given class
 function getClassSearchResultPage(className, successCallback, failureCallback) {
   let classNameForSearch = className.replace(/ /g, '+');
   httpGetWebpageAsyncWithProxy('https://catalog.byu.edu/search/site/' + classNameForSearch,
-    response => {
+    (response) => {
       // parseClassPageFromSearchResultPage(className, response, callback);
       successCallback(response);
     }, failureCallback);
   // inputStringArray[i] = inputStringArray[i].replace(/ /g, '+');
 }
 
-function httpGetWebpageAsyncWithProxy(pageUrl, successCallback, failureCallback) {
+function httpGetWebpageAsyncWithProxy(pageUrl, successCallback,
+  failureCallback) {
   // TODO: make custom proxy so I don't rely on someone else's
   const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
   let xmlHttp = new XMLHttpRequest();
@@ -219,7 +238,11 @@ function httpGetWebpageAsyncWithProxy(pageUrl, successCallback, failureCallback)
   };
   xmlHttp.onerror = () => {
     console.log('error: ', xmlHttp);
-    errorMessage = 'There was a problem retrieving ' + pageUrl + '. Make sure you\'re connected to the internet and that the website we\'re trying to retrieve is available. You can also hit Ctrl-Shift-I (Cmd-Opt-I on mac) and check the console for more info.';
+    errorMessage = 'There was a problem retrieving ' + pageUrl
+      + '. Make sure you\'re connected to the internet and that'
+      + 'the website we\'re trying to retrieve is available. You'
+      + 'can also hit Ctrl-Shift-I (Cmd-Opt-I on mac) and check'
+      + 'the console for more info.';
     error(errorMessage);
     failureCallback(errorMessage);
   };
@@ -227,15 +250,15 @@ function httpGetWebpageAsyncWithProxy(pageUrl, successCallback, failureCallback)
   xmlHttp.send(null);
 }
 
-function buildPrerequisiteTable(prereqArray){
+function buildPrerequisiteTable(prereqArray) {
 }
 
-function addIsPrerequisiteForPropertyToClassObjects(classInfoArray){
+function addIsPrerequisiteForPropertyToClassObjects(classInfoArray) {
   console.log('in addIsPrerequisiteForPropertyToClassObjects');
-  for(classObj of classInfoArray){
-    for(classObjToCompare of classInfoArray){
-      for(classObjPrereq of classObjToCompare.prerequisites){
-        if(classObj.className === classObjPrereq){
+  for (classObj of classInfoArray) {
+    for (classObjToCompare of classInfoArray) {
+      for (classObjPrereq of classObjToCompare.prerequisites) {
+        if (classObj.className === classObjPrereq) {
           classObj.isPrerequisiteFor.push(classObjToCompare.className);
         }
       }
