@@ -1,3 +1,6 @@
-p#error-output-text {
+p.error-output-text {
   color: red;
 } 
+
+p.info-output-text {
+}
