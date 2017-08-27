@@ -58,64 +58,16 @@ function outputPrereqList() {
   info('Beginning to process classes....');
   let classList = document.querySelector('textarea#class-list-input').value;
   classList = parseClassList(classList);
-  // console.log('processed class list: ', classList);
 
   // TODO: add loading bar.
-
-  // // .map returns a new array that is the result of doing something to every
-  // // item in the array it is called on. So in this case, I'll get an array
-  // // of promises that the browser will getPrerequistesForClass (one promise 
-  // per item)
-  // let classInfoArray = [];
-  // let requests = classList.map(className => {
-  //   return new Promise((resolve, reject)  => {
-  //     getPrerequisitesForClass(className, prereqList => {
-  //       classInfoArray.push({
-  //         className: className,
-  //         prerequisites: prereqList
-  //       });
-  //       console.log('success processing \'' + className +'\'.');
-  //       resolve('success processing \'' + className +'\'.');
-  //     }, (reason) => {
-  //       reject(reason);
-  //     });
-  //   });
-  // });
-  //
-  // // The problem with this approach is that I want the class info to be
-  // // processed even when some async functions fail....
-  // Promise.all(requests).then((successValue) => {
-  //   console.log('all promises completed: ', successValue);
-  //   console.log('Here\'s the class prereq info we found:', classInfoArray);
-  // },
-  // (reason) => {
-  //   // TODO: alert user that we'll try our best but couldn't find all needed 
-  //   // info
-  //   console.log('some promises failed: ', reason);
-  //   console.log('Here\'s the class prereq info we found:', classInfoArray);
-  // });
-
-  // classInfoArray is an array of objects of this format:
-  // {
-  //   className: string, name of class short code
-  //   prerequistes: list of classes required to be taken before this
-  //     class can be taken (the classes that "lock" this class)
-  //   isPrerequisiteFor: list of classes that this class "unlocks": classes
-  //     that require this class as a prerequisite.
-  // }
   let classInfoArray = [];
   getClassPrereqsAsyncFailureCount = 0;
   for (className of classList) {
-    // console.log('className: ', className);
     let localClassName = className;
-    // console.log('localClassName: ', localClassName);
     getPrerequisitesForClass(localClassName, (prereqList) => {
-      // console.log('localClassName inside async: ', localClassName);
       // TODO: add loading bar.
 
       classInfoArray.push(new ByuClassInfo(localClassName, prereqList, []));
-      // console.log('classInfoArray after processing ' + localClassName,
-      //   classInfoArray);
       if (classInfoArray.length === classList.length -
         getClassPrereqsAsyncFailureCount) {
         // DONE! Processed everything we can.
@@ -125,10 +77,8 @@ function outputPrereqList() {
             'got information for.');
         }
 
-        // console.log('before adding \'isPrerequisiteFor\':', classInfoArray);
         classInfoArray =
           addIsPrerequisiteForPropertyToClassObjects(classInfoArray);
-        // console.log('after adding \'isPrerequisiteFor\':', classInfoArray);
       }
     },
       // TODO: it'd probably be good to move all the error reports to this
@@ -203,8 +153,10 @@ function parseClassList(inputString) {
   return inputStringArray;
 }
 
-// TODO: convert async funtions to use promises instead. This might be helpful: 
+// TODO: convert async funtions to use promises instead. These might be
+// helpful: 
 // https://softwareengineering.stackexchange.com/questions/302455/is-there-really-a-fundamental-difference-between-callbacks-and-promises
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Using_promises
 /**
  * @param {string} className - short name of class as determined by BYU
  *   (for example, EC EN 220)
@@ -213,8 +165,6 @@ function parseClassList(inputString) {
  * @param {failureCallback} failureCallback
  */
 function getPrerequisitesForClass(className, successCallback, failureCallback) {
-  // TODO: use promises here?? See the link below:
-  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Using_promises
   getClassSearchResultPage(className, (classSearchResultPage) => {
     parseClassPageFromSearchResultPage(className, classSearchResultPage,
       (classPage) => {
@@ -244,11 +194,9 @@ function createHtmlDocFromString(htmlDocString) {
  */
 function parseClassPrerequisitesFromClassPage(className, htmlDocString,
   successCallback, failureCallback) {
-  // console.log('class page we found: ', htmlDocString);
   let htmlDoc = createHtmlDocFromString(htmlDocString);
   let courseData = htmlDoc.querySelectorAll('tr.course-data-row');
   let prerequisiteDataRow;
-  // for(courseDataRow of courseData){
   for (let i = 0; i < courseData.length; i++) {
     if (courseData[i].innerHTML.match(/.*prerequisites.*/i)) {
       prerequisiteDataRow = courseData[i];
@@ -267,7 +215,6 @@ function parseClassPrerequisitesFromClassPage(className, htmlDocString,
     prerequisites.push(prerequisiteLink.innerHTML);
   }
   successCallback(prerequisites);
-  // console.log('prerequisites for ' + className + ' are ', prerequisites);
 }
 
 /**
@@ -283,20 +230,12 @@ function parseClassPageFromSearchResultPage(className, htmlDocString,
   let htmlDoc = createHtmlDocFromString(htmlDocString);
   let linksToResults = htmlDoc.querySelector('ol.search-results')
     .querySelectorAll('a');
-  // let searchResults = htmlDoc.querySelectorAll('li.search-result');
-  // let firstSearchResult = htmlDoc
-  //   .querySelector("li.search-result:first-child");
-  // console.log("search results", searchResults);
 
   for (foundLink of linksToResults) {
     if (foundLink.innerHTML.match(new RegExp(className, 'i'))) {
-      // console.log('found it! ', foundLink);
-      // console.log('found href: ', foundLink.getAttribute('href'));
       httpGetWebpageAsyncWithProxy(foundLink.getAttribute('href'),
         (response) => {
           successCallback(response);
-          // parseClassPrerequisitesFromClassPage(className, response,
-          // callback);
         });
       return;
     }
@@ -322,10 +261,8 @@ function getClassSearchResultPage(className, successCallback, failureCallback) {
   let classNameForSearch = className.replace(/ /g, '+');
   httpGetWebpageAsyncWithProxy('https://catalog.byu.edu/search/site/'
     + classNameForSearch, (response) => {
-      // parseClassPageFromSearchResultPage(className, response, callback);
       successCallback(response);
     }, failureCallback);
-  // inputStringArray[i] = inputStringArray[i].replace(/ /g, '+');
 }
 
 /**
@@ -343,7 +280,6 @@ function httpGetWebpageAsyncWithProxy(pageUrl, successCallback,
   let xmlHttp = new XMLHttpRequest();
 
   xmlHttp.onload = () => {
-    // console.log('success! ', xmlHttp.responseText);
     successCallback(xmlHttp.responseText);
   };
   xmlHttp.onerror = () => {
