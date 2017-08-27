@@ -1,5 +1,54 @@
+/**
+ * Type and callback definitions for JSDocs
+ * @callback failureCallback - called when an asyncronous function fails.
+ *   Will be given a message.
+ * @param {errorMessage}
+ *
+ * @callback foundPrereqCallback - called when we find prereqs for a class
+ * @param {(string|array)} prerequisites for single class
+ *
+ * @callback foundLinkToClassPageCallback - called when we find the link to
+ *   a BYU course page
+ * @param {string} linkToClassPage - link to BYU course catalog page
+ *
+ * @callback foundClassSearchResultsPage - called when we find the page of
+ *   the search results for a short class name
+ * @param {string} className - short name of BYU course
+ *
+ * @callback gotWebsiteHtmlCallback - called when we found an HTML doc
+ */
+
+/**
+ * Objects containing classinfo will have the following form:
+ * {
+ *   className: String,
+ *   prerequisites: String[],
+ *   isPrerequisiteFor: String[],
+ * }
+ *
+ * this class gives a place to keep all these objects.
+ */
+class ByuClassInfo {
+  /**
+   * @param {string} className
+   * @param {string|Array} prerequisites
+   * @param {string|Array} isPrerequisiteFor
+   */
+  constructor(className, prerequisites, isPrerequisiteFor) {
+    this.className = className;
+    this.prerequisistes = prerequisites;
+    this.isPrerequisiteFor = isPrerequisiteFor;
+  }
+}
+
 let getClassPrereqsAsyncFailureCount = 0;
 
+/**
+ * Wraps together all the other functions required to parse input, get the
+ * required webpages, process the data, and output the results to the user.
+ * (does not return anything, does not take any inputs. Gets inputs from
+ * the textarea with id class-list-input)
+ */
 function outputPrereqList() {
   // TODO: fix the GET ERR_FILE_NOT_FOUND errors so they just don't show up
   console.log('FYI: there are lots of GET ERR_FILE_NOT_FOUND errors that ' +
@@ -64,11 +113,7 @@ function outputPrereqList() {
       // console.log('localClassName inside async: ', localClassName);
       // TODO: add loading bar.
 
-      classInfoArray.push({
-        className: localClassName,
-        prerequisites: prereqList,
-        isPrerequisiteFor: [],
-      });
+      classInfoArray.push(new ByuClassInfo(localClassName, prereqList, []));
       // console.log('classInfoArray after processing ' + localClassName,
       //   classInfoArray);
       if (classInfoArray.length === classList.length -
@@ -98,14 +143,30 @@ function outputPrereqList() {
   }
 }
 
+/**
+ * Prints an error (red text) to the html doc, under the textarea
+ * input box.
+ * @param {string} errorMessage
+ */
 function error(errorMessage) {
   alertOnPage(errorMessage, 'error-output-text');
 }
 
+/**
+ * Prints an error (black text) to the html doc, under the textarea
+ * input box.
+ * @param {string} infoMessage
+ */
 function info(infoMessage) {
   alertOnPage(infoMessage, 'info-output-text');
 }
 
+/**
+ * Adds a p element inside div#error-output-container with the given
+ * message as contents and the given htmlClass as the class
+ * @param {string} message
+ * @param {string} htmlClass
+ */
 function alertOnPage(message, htmlClass) {
   let errorOutputContainer = document
     .querySelector('div#error-output-container').innerHTML;
@@ -117,6 +178,14 @@ function alertOnPage(message, htmlClass) {
     + errorOutputContainer;
 }
 
+/**
+ * Takes a list of classes as one string (each class is separated by a new
+ * line), and returns an array that contains each class as a separate element.
+ * Lines starting with '#' are ignored and strings are trimmed before being
+ * added to the array.
+ * @param {string} inputString
+ * @return {(string|Array)}
+ */
 function parseClassList(inputString) {
   inputString = inputString.replace(/\r\n/g, '\n');
   inputString = inputString.replace(/\r/g, '\n');
@@ -136,8 +205,13 @@ function parseClassList(inputString) {
 
 // TODO: convert async funtions to use promises instead. This might be helpful: 
 // https://softwareengineering.stackexchange.com/questions/302455/is-there-really-a-fundamental-difference-between-callbacks-and-promises
-// successCallback will be given an array of strings containing the
-// prerequisites for the given class.
+/**
+ * @param {string} className - short name of class as determined by BYU
+ *   (for example, EC EN 220)
+ * @param {foundPrereqCallback} successCallback - will be given an array
+ *   of strings, where each string is a prereq.
+ * @param {failureCallback} failureCallback
+ */
 function getPrerequisitesForClass(className, successCallback, failureCallback) {
   // TODO: use promises here?? See the link below:
   // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Using_promises
@@ -150,12 +224,24 @@ function getPrerequisitesForClass(className, successCallback, failureCallback) {
   }, failureCallback);
 }
 
+/**
+ * @param {string} htmlDocString - string that is a valid HTML document
+ * @return {document} htmlDoc - HTML document that can be manipulated natively
+ */
 function createHtmlDocFromString(htmlDocString) {
   let htmlDoc = document.createElement( 'html' );
   htmlDoc.innerHTML = htmlDocString;
   return htmlDoc;
 }
 
+/**
+ * Gets a class's prerequisites from the BYU course catalog page for that class.
+ * @param {string} className - short name of BYU class
+ * @param {string} htmlDocString - HTML doc for the class page for className on
+ *   the BYU course catalog website
+ * @param {foundPrereqCallback} successCallback
+ * @param {failureCallback} failureCallback
+ */
 function parseClassPrerequisitesFromClassPage(className, htmlDocString,
   successCallback, failureCallback) {
   // console.log('class page we found: ', htmlDocString);
@@ -184,6 +270,14 @@ function parseClassPrerequisitesFromClassPage(className, htmlDocString,
   // console.log('prerequisites for ' + className + ' are ', prerequisites);
 }
 
+/**
+ * @param {string} className - short classname as given by BYU
+ * @param {string} htmlDocString - HTML doc for page of the search results when
+ *   searching className on the BYU course catalog, as a string
+ * @param {foundLinkToClassPageCallback} successCallback - given link to the
+ *   class page we found
+ * @param {failureCallback} failureCallback - given error message
+ */
 function parseClassPageFromSearchResultPage(className, htmlDocString,
   successCallback, failureCallback) {
   let htmlDoc = createHtmlDocFromString(htmlDocString);
@@ -214,18 +308,34 @@ function parseClassPageFromSearchResultPage(className, htmlDocString,
   failureCallback(errorMessage);
 }
 
-// this function is the first in a chain that will eventually get 
-// the prerequisites for a given class
+/**
+ * this function is the first in a chain that will eventually get 
+ * the prerequisites for a given class
+ *
+ * This function just gets the page as a string of an html doc
+ * @param {string} className - short name of class as given by BYU
+ * @param {foundClassSearchResultsPage} successCallback - given 
+ *   html doc of search results page (as a string)
+ * @param {failureCallback} failureCallback
+ */
 function getClassSearchResultPage(className, successCallback, failureCallback) {
   let classNameForSearch = className.replace(/ /g, '+');
-  httpGetWebpageAsyncWithProxy('https://catalog.byu.edu/search/site/' + classNameForSearch,
-    (response) => {
+  httpGetWebpageAsyncWithProxy('https://catalog.byu.edu/search/site/'
+    + classNameForSearch, (response) => {
       // parseClassPageFromSearchResultPage(className, response, callback);
       successCallback(response);
     }, failureCallback);
   // inputStringArray[i] = inputStringArray[i].replace(/ /g, '+');
 }
 
+/**
+ * uses a proxy in order to use cors anywhere, even when the browser would
+ * normally block http requests.
+ * @param {string} pageUrl
+ * @param {gotWebsiteHtmlCallback} successCallback - given a STRING that is
+ *   a valid html doc
+ * @param {failureCallback} failureCallback
+ */
 function httpGetWebpageAsyncWithProxy(pageUrl, successCallback,
   failureCallback) {
   // TODO: make custom proxy so I don't rely on someone else's
@@ -253,6 +363,16 @@ function httpGetWebpageAsyncWithProxy(pageUrl, successCallback,
 function buildPrerequisiteTable(prereqArray) {
 }
 
+/**
+ * This function adds values to the array 'isPrerequisiteFor',
+ * which is expected to be empty before this function is run.
+ * This function runs on a given array and returns a new array with
+ * the freshly-added isPrerequisiteFor properties.
+ * @param {ByuClassInfo|Array} classInfoArray
+ * @return {ByuClassInfo|Array} classInfoArray - new array with the 
+ *   isPrerequisiteFor arrays populated as much as possible on each
+ *   object.
+ */
 function addIsPrerequisiteForPropertyToClassObjects(classInfoArray) {
   console.log('in addIsPrerequisiteForPropertyToClassObjects');
   for (classObj of classInfoArray) {
