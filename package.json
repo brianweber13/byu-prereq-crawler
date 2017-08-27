@@ -26,6 +26,7 @@
   },
   "homepage": "https://github.com/brianweber13/byu-prereq-crawler#readme",
   "devDependencies": {
-    "eslint-config-google": "^0.9.1"
+    "eslint-config-google": "^0.9.1",
+    "jsdoc": "^3.5.4"
   }
 }
