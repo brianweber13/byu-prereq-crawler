@@ -36,7 +36,7 @@ class ByuClassInfo {
    */
   constructor(className, prerequisites, isPrerequisiteFor) {
     this.className = className;
-    this.prerequisistes = prerequisites;
+    this.prerequisites = prerequisites;
     this.isPrerequisiteFor = isPrerequisiteFor;
   }
 }
@@ -64,32 +64,35 @@ function outputPrereqList() {
   getClassPrereqsAsyncFailureCount = 0;
   for (className of classList) {
     let localClassName = className;
-    getPrerequisitesForClass(localClassName, (prereqList) => {
-      // TODO: add loading bar.
+    getPrerequisitesForClass(
+      localClassName,
+      (prereqList) => {
+        // TODO: add loading bar.
 
-      classInfoArray.push(new ByuClassInfo(localClassName, prereqList, []));
-      if (classInfoArray.length === classList.length -
-        getClassPrereqsAsyncFailureCount) {
-        // DONE! Processed everything we can.
-        if (getClassPrereqsAsyncFailureCount !== 0) {
-          error('failed to process ' + getClassPrereqsAsyncFailureCount +
-            ' classes. Generating results for the classes we successfully ' +
-            'got information for.');
+        classInfoArray.push(new ByuClassInfo(localClassName, prereqList, []));
+        if (classInfoArray.length === classList.length -
+          getClassPrereqsAsyncFailureCount) {
+          // DONE! Processed everything we can.
+          if (getClassPrereqsAsyncFailureCount !== 0) {
+            error('failed to process ' + getClassPrereqsAsyncFailureCount +
+              ' classes. Generating results for the classes we successfully ' +
+              'got information for.');
+          }
+
+          classInfoArray =
+            addIsPrerequisiteForPropertyToClassObjects(classInfoArray);
         }
-
-        classInfoArray =
-          addIsPrerequisiteForPropertyToClassObjects(classInfoArray);
-      }
-    },
+      },
       // TODO: it'd probably be good to move all the error reports to this
       // part. That way the other functions will be more modular, and the
       // medium of the error handling can be input the callback
       () => {
-      // (failureReason) => {
+        // (failureReason) => {
         // TODO: 
         // error(failureReason);
         getClassPrereqsAsyncFailureCount++;
-      });
+      }
+    );
   }
 }
 
@@ -310,7 +313,6 @@ function buildPrerequisiteTable(prereqArray) {
  *   object.
  */
 function addIsPrerequisiteForPropertyToClassObjects(classInfoArray) {
-  console.log('in addIsPrerequisiteForPropertyToClassObjects');
   for (classObj of classInfoArray) {
     for (classObjToCompare of classInfoArray) {
       for (classObjPrereq of classObjToCompare.prerequisites) {
