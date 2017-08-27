@@ -1,4 +1,32 @@
-/**
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: byu-prereq-crawler.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: byu-prereq-crawler.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
  * Type and callback definitions for JSDocs
  * @callback failureCallback - called when an asyncronous function fails.
  *   Will be given a message.
@@ -36,7 +64,7 @@ class ByuClassInfo {
    */
   constructor(className, prerequisites, isPrerequisiteFor) {
     this.className = className;
-    this.prerequisites = prerequisites;
+    this.prerequisistes = prerequisites;
     this.isPrerequisiteFor = isPrerequisiteFor;
   }
 }
@@ -58,41 +86,88 @@ function outputPrereqList() {
   info('Beginning to process classes....');
   let classList = document.querySelector('textarea#class-list-input').value;
   classList = parseClassList(classList);
+  // console.log('processed class list: ', classList);
 
   // TODO: add loading bar.
+
+  // // .map returns a new array that is the result of doing something to every
+  // // item in the array it is called on. So in this case, I'll get an array
+  // // of promises that the browser will getPrerequistesForClass (one promise 
+  // per item)
+  // let classInfoArray = [];
+  // let requests = classList.map(className => {
+  //   return new Promise((resolve, reject)  => {
+  //     getPrerequisitesForClass(className, prereqList => {
+  //       classInfoArray.push({
+  //         className: className,
+  //         prerequisites: prereqList
+  //       });
+  //       console.log('success processing \'' + className +'\'.');
+  //       resolve('success processing \'' + className +'\'.');
+  //     }, (reason) => {
+  //       reject(reason);
+  //     });
+  //   });
+  // });
+  //
+  // // The problem with this approach is that I want the class info to be
+  // // processed even when some async functions fail....
+  // Promise.all(requests).then((successValue) => {
+  //   console.log('all promises completed: ', successValue);
+  //   console.log('Here\'s the class prereq info we found:', classInfoArray);
+  // },
+  // (reason) => {
+  //   // TODO: alert user that we'll try our best but couldn't find all needed 
+  //   // info
+  //   console.log('some promises failed: ', reason);
+  //   console.log('Here\'s the class prereq info we found:', classInfoArray);
+  // });
+
+  // classInfoArray is an array of objects of this format:
+  // {
+  //   className: string, name of class short code
+  //   prerequistes: list of classes required to be taken before this
+  //     class can be taken (the classes that "lock" this class)
+  //   isPrerequisiteFor: list of classes that this class "unlocks": classes
+  //     that require this class as a prerequisite.
+  // }
   let classInfoArray = [];
   getClassPrereqsAsyncFailureCount = 0;
   for (className of classList) {
+    // console.log('className: ', className);
     let localClassName = className;
-    getPrerequisitesForClass(
-      localClassName,
-      (prereqList) => {
-        // TODO: add loading bar.
+    // console.log('localClassName: ', localClassName);
+    getPrerequisitesForClass(localClassName, (prereqList) => {
+      // console.log('localClassName inside async: ', localClassName);
+      // TODO: add loading bar.
 
-        classInfoArray.push(new ByuClassInfo(localClassName, prereqList, []));
-        if (classInfoArray.length === classList.length -
-          getClassPrereqsAsyncFailureCount) {
-          // DONE! Processed everything we can.
-          if (getClassPrereqsAsyncFailureCount !== 0) {
-            error('failed to process ' + getClassPrereqsAsyncFailureCount +
-              ' classes. Generating results for the classes we successfully ' +
-              'got information for.');
-          }
-
-          classInfoArray =
-            addIsPrerequisiteForPropertyToClassObjects(classInfoArray);
+      classInfoArray.push(new ByuClassInfo(localClassName, prereqList, []));
+      // console.log('classInfoArray after processing ' + localClassName,
+      //   classInfoArray);
+      if (classInfoArray.length === classList.length -
+        getClassPrereqsAsyncFailureCount) {
+        // DONE! Processed everything we can.
+        if (getClassPrereqsAsyncFailureCount !== 0) {
+          error('failed to process ' + getClassPrereqsAsyncFailureCount +
+            ' classes. Generating results for the classes we successfully ' +
+            'got information for.');
         }
-      },
+
+        // console.log('before adding \'isPrerequisiteFor\':', classInfoArray);
+        classInfoArray =
+          addIsPrerequisiteForPropertyToClassObjects(classInfoArray);
+        // console.log('after adding \'isPrerequisiteFor\':', classInfoArray);
+      }
+    },
       // TODO: it'd probably be good to move all the error reports to this
       // part. That way the other functions will be more modular, and the
       // medium of the error handling can be input the callback
       () => {
-        // (failureReason) => {
+      // (failureReason) => {
         // TODO: 
         // error(failureReason);
         getClassPrereqsAsyncFailureCount++;
-      }
-    );
+      });
   }
 }
 
@@ -127,7 +202,7 @@ function alertOnPage(message, htmlClass) {
   let time = date.getHours() + ':' + date.getMinutes() + ':' +
     date.getSeconds();
   document.querySelector('div#error-output-container').innerHTML =
-    ('<p class=' + htmlClass + '>' + time + ' ' + message + '</p>')
+    ('&lt;p class=' + htmlClass + '>' + time + ' ' + message + '&lt;/p>')
     + errorOutputContainer;
 }
 
@@ -143,7 +218,7 @@ function parseClassList(inputString) {
   inputString = inputString.replace(/\r\n/g, '\n');
   inputString = inputString.replace(/\r/g, '\n');
   inputStringArray = inputString.split('\n');
-  for (let i = 0; i < inputStringArray.length;) {
+  for (let i = 0; i &lt; inputStringArray.length;) {
     if (inputStringArray[i].charAt(0) === '#') {
       inputStringArray.splice(i, 1);
     } else if ( inputStringArray[i].length === 0) {
@@ -156,10 +231,8 @@ function parseClassList(inputString) {
   return inputStringArray;
 }
 
-// TODO: convert async funtions to use promises instead. These might be
-// helpful: 
+// TODO: convert async funtions to use promises instead. This might be helpful: 
 // https://softwareengineering.stackexchange.com/questions/302455/is-there-really-a-fundamental-difference-between-callbacks-and-promises
-// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Using_promises
 /**
  * @param {string} className - short name of class as determined by BYU
  *   (for example, EC EN 220)
@@ -168,6 +241,8 @@ function parseClassList(inputString) {
  * @param {failureCallback} failureCallback
  */
 function getPrerequisitesForClass(className, successCallback, failureCallback) {
+  // TODO: use promises here?? See the link below:
+  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Using_promises
   getClassSearchResultPage(className, (classSearchResultPage) => {
     parseClassPageFromSearchResultPage(className, classSearchResultPage,
       (classPage) => {
@@ -197,10 +272,12 @@ function createHtmlDocFromString(htmlDocString) {
  */
 function parseClassPrerequisitesFromClassPage(className, htmlDocString,
   successCallback, failureCallback) {
+  // console.log('class page we found: ', htmlDocString);
   let htmlDoc = createHtmlDocFromString(htmlDocString);
   let courseData = htmlDoc.querySelectorAll('tr.course-data-row');
   let prerequisiteDataRow;
-  for (let i = 0; i < courseData.length; i++) {
+  // for(courseDataRow of courseData){
+  for (let i = 0; i &lt; courseData.length; i++) {
     if (courseData[i].innerHTML.match(/.*prerequisites.*/i)) {
       prerequisiteDataRow = courseData[i];
       break;
@@ -218,6 +295,7 @@ function parseClassPrerequisitesFromClassPage(className, htmlDocString,
     prerequisites.push(prerequisiteLink.innerHTML);
   }
   successCallback(prerequisites);
+  // console.log('prerequisites for ' + className + ' are ', prerequisites);
 }
 
 /**
@@ -233,12 +311,20 @@ function parseClassPageFromSearchResultPage(className, htmlDocString,
   let htmlDoc = createHtmlDocFromString(htmlDocString);
   let linksToResults = htmlDoc.querySelector('ol.search-results')
     .querySelectorAll('a');
+  // let searchResults = htmlDoc.querySelectorAll('li.search-result');
+  // let firstSearchResult = htmlDoc
+  //   .querySelector("li.search-result:first-child");
+  // console.log("search results", searchResults);
 
   for (foundLink of linksToResults) {
     if (foundLink.innerHTML.match(new RegExp(className, 'i'))) {
+      // console.log('found it! ', foundLink);
+      // console.log('found href: ', foundLink.getAttribute('href'));
       httpGetWebpageAsyncWithProxy(foundLink.getAttribute('href'),
         (response) => {
           successCallback(response);
+          // parseClassPrerequisitesFromClassPage(className, response,
+          // callback);
         });
       return;
     }
@@ -264,8 +350,10 @@ function getClassSearchResultPage(className, successCallback, failureCallback) {
   let classNameForSearch = className.replace(/ /g, '+');
   httpGetWebpageAsyncWithProxy('https://catalog.byu.edu/search/site/'
     + classNameForSearch, (response) => {
+      // parseClassPageFromSearchResultPage(className, response, callback);
       successCallback(response);
     }, failureCallback);
+  // inputStringArray[i] = inputStringArray[i].replace(/ /g, '+');
 }
 
 /**
@@ -283,6 +371,7 @@ function httpGetWebpageAsyncWithProxy(pageUrl, successCallback,
   let xmlHttp = new XMLHttpRequest();
 
   xmlHttp.onload = () => {
+    // console.log('success! ', xmlHttp.responseText);
     successCallback(xmlHttp.responseText);
   };
   xmlHttp.onerror = () => {
@@ -313,6 +402,7 @@ function buildPrerequisiteTable(prereqArray) {
  *   object.
  */
 function addIsPrerequisiteForPropertyToClassObjects(classInfoArray) {
+  console.log('in addIsPrerequisiteForPropertyToClassObjects');
   for (classObj of classInfoArray) {
     for (classObjToCompare of classInfoArray) {
       for (classObjPrereq of classObjToCompare.prerequisites) {
@@ -325,3 +415,26 @@ function addIsPrerequisiteForPropertyToClassObjects(classInfoArray) {
   return classInfoArray;
 }
 
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ByuClassInfo.html">ByuClassInfo</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addIsPrerequisiteForPropertyToClassObjects">addIsPrerequisiteForPropertyToClassObjects</a></li><li><a href="global.html#alertOnPage">alertOnPage</a></li><li><a href="global.html#createHtmlDocFromString">createHtmlDocFromString</a></li><li><a href="global.html#error">error</a></li><li><a href="global.html#getClassSearchResultPage">getClassSearchResultPage</a></li><li><a href="global.html#getPrerequisitesForClass">getPrerequisitesForClass</a></li><li><a href="global.html#httpGetWebpageAsyncWithProxy">httpGetWebpageAsyncWithProxy</a></li><li><a href="global.html#info">info</a></li><li><a href="global.html#outputPrereqList">outputPrereqList</a></li><li><a href="global.html#parseClassList">parseClassList</a></li><li><a href="global.html#parseClassPageFromSearchResultPage">parseClassPageFromSearchResultPage</a></li><li><a href="global.html#parseClassPrerequisitesFromClassPage">parseClassPrerequisitesFromClassPage</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.4</a> on Sun Aug 27 2017 14:03:01 GMT-0600 (MDT)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

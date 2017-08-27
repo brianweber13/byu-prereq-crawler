@@ -1,0 +1,32 @@
+{
+  "name": "byu-prereq-crawler",
+  "version": "1.0.0",
+  "description": "Tool to determine what each class in a list of classes is a prerequisite for. Will also create graphical flowcharts.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/brianweber13/byu-prereq-crawler.git"
+  },
+  "keywords": [
+    "javascript",
+    "byu",
+    "course",
+    "class",
+    "catalog",
+    "flowchart",
+    "prerequisite"
+  ],
+  "author": "Brian Weber",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/brianweber13/byu-prereq-crawler/issues"
+  },
+  "homepage": "https://github.com/brianweber13/byu-prereq-crawler#readme",
+  "devDependencies": {
+    "eslint-config-google": "^0.9.1",
+    "jsdoc": "^3.5.4"
+  }
+}
