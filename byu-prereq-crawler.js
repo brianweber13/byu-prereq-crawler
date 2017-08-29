@@ -82,10 +82,8 @@ function outputPrereqList() {
 
           classInfoArray =
             addIsPrerequisiteForPropertyToClassObjects(classInfoArray);
-          console.log(classInfoArray);
 
           let prerequisiteTable = buildPrerequisiteTable(classInfoArray);
-          // console.log(prerequisiteTable);
           document.querySelector('div#class-info-table').innerHTML =
             prerequisiteTable;
         }
