@@ -82,6 +82,12 @@ function outputPrereqList() {
 
           classInfoArray =
             addIsPrerequisiteForPropertyToClassObjects(classInfoArray);
+          console.log(classInfoArray);
+
+          let prerequisiteTable = buildPrerequisiteTable(classInfoArray);
+          // console.log(prerequisiteTable);
+          document.querySelector('div#class-info-table').innerHTML =
+            prerequisiteTable;
         }
       },
       // TODO: it'd probably be good to move all the error reports to this
@@ -333,8 +339,8 @@ function buildPrerequisiteTable(classInfoArray) {
     // add the classes this class is a prerequisite for
     outputTable += '    <td>';
     for (let i = 0; i < classInfo.isPrerequisiteFor.length; i++) {
-      outputTable += classInfo.prerequisites[i];
-      if (i < classInfo.prerequisites.length - 1) {
+      outputTable += classInfo.isPrerequisiteFor[i];
+      if (i < classInfo.isPrerequisiteFor.length - 1) {
         outputTable += ', ';
       }
     }
