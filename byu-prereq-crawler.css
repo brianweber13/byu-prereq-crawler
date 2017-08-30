@@ -4,3 +4,7 @@ p.error-output-text {
 
 p.info-output-text {
 }
+
+table, th, td {
+   border: 1px solid black;
+}

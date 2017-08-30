@@ -16,6 +16,7 @@
  * @param {string} className - short name of BYU course
  *
  * @callback gotWebsiteHtmlCallback - called when we found an HTML doc
+ * @param {string} htmlDocString - a valid HTML doc
  */
 
 /**
@@ -81,6 +82,10 @@ function outputPrereqList() {
 
           classInfoArray =
             addIsPrerequisiteForPropertyToClassObjects(classInfoArray);
+
+          let prerequisiteTable = buildPrerequisiteTable(classInfoArray);
+          document.querySelector('div#class-info-table').innerHTML =
+            prerequisiteTable;
         }
       },
       // TODO: it'd probably be good to move all the error reports to this
@@ -299,7 +304,52 @@ function httpGetWebpageAsyncWithProxy(pageUrl, successCallback,
   xmlHttp.send(null);
 }
 
-function buildPrerequisiteTable(prereqArray) {
+/**
+ * @param {ByuClassInfo|Array} classInfoArray
+ * @return {string} classInfoTable - html table displaying data from array
+ */
+function buildPrerequisiteTable(classInfoArray) {
+  let outputTable
+    = '<table id=prerequisite-table>\n'
+    + '  <tr>\n'
+    + '    <th>Prerequisites</th>\n'
+    + '    <th>Class</th>\n'
+    + '    <th>Prerequisite For</th>\n'
+    + '  </tr>\n';
+
+  for (let classInfo of classInfoArray) {
+    // add new table row
+    outputTable += '  <tr>\n';
+
+    // add contents to prerequisite column
+    outputTable += '    <td>';
+    for (let i = 0; i < classInfo.prerequisites.length; i++) {
+      outputTable += classInfo.prerequisites[i];
+      if (i < classInfo.prerequisites.length - 1) {
+        outputTable += ', ';
+      }
+    }
+    outputTable += '</td>\n';
+
+    // add the name of the class
+    outputTable += '    <td>' + classInfo.className + '</td>\n';
+
+    // add the classes this class is a prerequisite for
+    outputTable += '    <td>';
+    for (let i = 0; i < classInfo.isPrerequisiteFor.length; i++) {
+      outputTable += classInfo.isPrerequisiteFor[i];
+      if (i < classInfo.isPrerequisiteFor.length - 1) {
+        outputTable += ', ';
+      }
+    }
+    outputTable += '</td>\n';
+
+    // close the row
+    outputTable += '  </tr>\n';
+  }
+
+  outputTable += '</table>';
+  return outputTable;
 }
 
 /**
