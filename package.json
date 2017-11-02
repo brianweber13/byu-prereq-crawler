@@ -2,7 +2,7 @@
   "name": "byu-prereq-crawler",
   "version": "0.1.0",
   "description": "Tool to determine what each class in a list of classes is a prerequisite for. Will also create graphical flowcharts.",
-  "main": "app.js",
+  "main": "index.php",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
