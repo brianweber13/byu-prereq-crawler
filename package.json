@@ -1,6 +1,6 @@
 {
   "name": "byu-prereq-crawler",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Tool to determine what each class in a list of classes is a prerequisite for. Will also create graphical flowcharts.",
   "main": "app.js",
   "scripts": {
@@ -26,7 +26,13 @@
   },
   "homepage": "https://github.com/brianweber13/byu-prereq-crawler#readme",
   "devDependencies": {
+    "eslint": "^4.5.0",
     "eslint-config-google": "^0.9.1",
     "jsdoc": "^3.5.4"
+  },
+  "directories": {
+    "doc": "docs"
+  },
+  "dependencies": {
   }
 }
