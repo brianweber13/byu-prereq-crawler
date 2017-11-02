@@ -1,6 +1,5 @@
-# BYU Prerequiste Crawler
 ## What does it do?
-Given a list of classes, this program determines which classes are prerequisites for other classes in that list and then presents a table of classes in the format `class: classes that 'class' is a prerequisite for`. This is useful when planning classes: it plays much the same role as a flowchart, but it is as up to date as the last time the script was run, whereas flowcharts are dependent on the department and often horribly out of date. In the future, I plan to extend this program to create a graphical flowchart as well.
+Given a list of classes, this program determines which classes are prerequisites for other classes in that list and then presents a table of classes in the format `prerequisites for 'class' | class | classes that 'class' is a prerequisite for`. This is useful when planning classes: it plays much the same role as a flowchart, but it is as up to date as the last time the script was run, whereas flowcharts are dependent on the department and often horribly out of date. In the future, I plan to extend this program to create a graphical flowchart as well.
 
 ### How do I use it?
 [Click here](byu-prereq-crawler.html) to try it out!
