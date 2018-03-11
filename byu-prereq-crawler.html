@@ -1,51 +1,73 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>BYU Prerequisite Crawler</title>
+    <title>BYU Flowchart Tool</title>
     <meta charset="UTF-8">
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+          crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="byu-prereq-crawler.css">
-    <!--<script src="https://code.jquery.com/jquery-3.2.1.min.js"
-            integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
-            crossorigin="anonymous"></script>-->
   </head>
 
-  <body>
-    <textarea id='class-list-input' rows="40" cols="50"># Input all the classes you need to take, one on each line, and I will output each class and a list of what classes it's a prerequisite for.
+  <body class='background'>
+    <!-- header -->
+    <div class='primary'>
+      <h1 class='light-text'>BYU Flowchart Tool</h1>
+    </div>
 
-# Lines starting with '#' will be ignored.
-# the class name must exactly match the name of the class in the BYU course catalog    
-# Below is an example of what this list can look like.
-C S 142
-C S 235
-C S 236
-C S 240
-EC EN 191
-EC EN 220
-EC EN 240
-EC EN 323
-EC EN 330
-EC EN 340
-EC EN 380
-EC EN 390
-EC EN 391
-EC EN 475
-EC EN 476
-MATH 112
-MATH 113
-MATH 313
-MATH 334
-PHSCS 121
-PHSCS 220
-STAT 201
-CHEM 105
-ENGL 312
-EC EN 424
-EC EN 425
-C S 465
-C S 460</textarea>
-    <button type="button" onclick="outputPrereqList()">Submit</button>
-    <div id='class-info-table'></div>
-    <div id='error-output-container'></div>
+    <!-- main content -->
+    <div class="container">
+      <div class="row">
+    <p>
+    Input all the classes you need to take, one on each line, and I will
+    output each class and a list of what classes it's a prerequisite for.
+    Lines starting with '#' will be ignored. The class name must exactly
+    match the name of the class in the BYU course catalog    
+    </p>
+      </div>
+      <div class="row">
+        <div class="col-sm">
+          <textarea id='class-list-input' class="form-control-lg" rows="20" >
+            # Below is an example of what this list can look like.
+            C S 142
+            C S 235
+            C S 236
+            C S 240
+            EC EN 191
+            EC EN 220
+            EC EN 240
+            EC EN 323
+            EC EN 330
+            EC EN 340
+            EC EN 380
+            EC EN 390
+            EC EN 391
+            EC EN 475
+            EC EN 476
+            MATH 112
+            MATH 113
+            MATH 313
+            MATH 334
+            PHSCS 121
+            PHSCS 220
+            STAT 201
+            CHEM 105
+            ENGL 312
+            EC EN 424
+            EC EN 425
+            C S 465
+            C S 460</textarea>
+          <button type="button" onclick="outputPrereqList()">Submit</button>
+        </div> <!-- col-sm -->
+        <div class='col-sm'>
+          <div id='class-info-table'></div> 
+        </div> <!-- col-sm -->
+      </div> <!-- row -->
+      <div class="row">
+        <div id='error-output-container'></div>
+      </div>
+    </div> <!-- container -->
   </body>
 
   <script src='byu-prereq-crawler.js'></script>
