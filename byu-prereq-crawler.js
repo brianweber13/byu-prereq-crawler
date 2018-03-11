@@ -249,7 +249,7 @@ function parseClassPageFromSearchResultPage(className, htmlDocString,
     }
   }
   errorMessage = 'we couldn\'t find the class \'' + className
-    + '\'. Ensure that it\'s the exact name of the class in the'
+    + '\'. Ensure that it\'s the exact name of the class in the '
     + 'byu catalog and try again!';
   error(errorMessage);
   failureCallback(errorMessage);
@@ -293,9 +293,9 @@ function httpGetWebpageAsyncWithProxy(pageUrl, successCallback,
   xmlHttp.onerror = () => {
     console.log('error: ', xmlHttp);
     errorMessage = 'There was a problem retrieving ' + pageUrl
-      + '. Make sure you\'re connected to the internet and that'
-      + 'the website we\'re trying to retrieve is available. You'
-      + 'can also hit Ctrl-Shift-I (Cmd-Opt-I on mac) and check'
+      + '. Make sure you\'re connected to the internet and that '
+      + 'the website we\'re trying to retrieve is available. You '
+      + 'can also hit Ctrl-Shift-I (Cmd-Opt-I on mac) and check '
       + 'the console for more info.';
     error(errorMessage);
     failureCallback(errorMessage);
