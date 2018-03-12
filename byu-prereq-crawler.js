@@ -316,8 +316,8 @@ function buildPrerequisiteTable(classInfoArray) {
     + '      <th>Prerequisites</th>\n'
     + '      <th>Class</th>\n'
     + '      <th>Prerequisite For</th>\n'
-    + '    </tr>\n';
-    + '  </thead>\n';
+    + '    </tr>\n'
+    + '  </thead>\n'
     + '  <tbody>\n';
 
   for (let classInfo of classInfoArray) {
