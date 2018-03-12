@@ -5,10 +5,16 @@ p.error-output-text {
 p.info-output-text {
 }
 
+/* padding and margins */
 h1 {
   padding: 1em;
 }
 
+.margin-bottom {
+  margin-bottom: 1em;
+}
+
+/* colors */
 .light-text {
   color: #DDDDDD;
 }
