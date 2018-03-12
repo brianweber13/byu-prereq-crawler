@@ -1,36 +1,36 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>BYU Flowchart Tool</title>
-    <meta charset="UTF-8">
-    <link rel="stylesheet"
-          href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
-          crossorigin="anonymous">
-    <link rel="stylesheet" type="text/css" href="byu-prereq-crawler.css">
-  </head>
 
-  <body class='background'>
-    <!-- header -->
-    <div class='primary'>
-      <h1 class='light-text'>BYU Flowchart Tool</h1>
+<head>
+  <title>BYU Flowchart Tool</title>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" 
+  href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" 
+  integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+  crossorigin="anonymous">
+  <link rel="stylesheet" type="text/css" href="byu-prereq-crawler.css">
+</head>
+
+<body class='background'>
+  <!-- header -->
+  <div class='primary'>
+    <h1 class='light-text'>BYU Flowchart Tool</h1>
+  </div>
+
+  <!-- main content -->
+  <div class="container">
+    <div class="row">
+      <p>
+        Input all the classes you need to take, one on each line, and I will output each class and a list of what classes it's a
+        prerequisite for. Lines starting with '#' will be ignored. The class name must exactly match the name of the class
+        in the BYU course catalog
+      </p>
     </div>
-
-    <!-- main content -->
-    <div class="container">
-      <div class="row">
-    <p>
-    Input all the classes you need to take, one on each line, and I will
-    output each class and a list of what classes it's a prerequisite for.
-    Lines starting with '#' will be ignored. The class name must exactly
-    match the name of the class in the BYU course catalog    
-    </p>
-      </div>
-      <div class="row">
-        <div class="col-sm">
-          <form>
-            <div class="form-group">
-              <textarea id='class-list-input' class="form-control" rows="20">
+    <div class="row margin-bottom">
+      <div class="col-sm">
+        <form>
+          <div class="form-group">
+            <textarea id='class-list-input' class="form-control" rows="20">
 # Below is an example of what this list can look like.
 C S 142
 C S 235
@@ -60,20 +60,26 @@ EC EN 424
 EC EN 425
 C S 465
 C S 460</textarea>
-            </div> <!-- form group -->
-          </form>
-          <button class="btn btn-primary btn-block" type="button" onclick="outputPrereqList()">Submit</button>
-        </div> <!-- col-sm -->
-        <div class='col-sm'>
-          <div id='class-info-table'></div> 
-        </div> <!-- col-sm -->
-      </div> <!-- row -->
-      <div class="row">
-        <div id='error-output-container'></div>
+          </div>
+          <!-- form group -->
+        </form>
+        <button class="btn btn-primary btn-block" type="button" onclick="outputPrereqList()">Submit</button>
       </div>
-    </div> <!-- container -->
-  </body>
+      <!-- col-sm -->
+      <div class='col-sm'>
+        <div id='class-info-table'></div>
+      </div>
+      <!-- col-sm -->
+    </div>
+    <!-- row -->
+    <div class="row">
+      <label for="error-output-container">Log:</label>
+      <div id='error-output-container'></div>
+    </div>
+  </div>
+  <!-- container -->
+</body>
 
-  <script src='byu-prereq-crawler.js'></script>
+<script src='byu-prereq-crawler.js'></script>
+
 </html>
-
