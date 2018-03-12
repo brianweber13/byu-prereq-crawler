@@ -132,8 +132,8 @@ function alertOnPage(message, htmlClass) {
   let time = date.getHours() + ':' + date.getMinutes() + ':' +
     date.getSeconds();
   document.querySelector('div#error-output-container').innerHTML =
-    ('<p class=' + htmlClass + '>' + time + ' ' + message + '</p>')
-    + errorOutputContainer;
+    errorOutputContainer +
+    ('<p class=' + htmlClass + '>' + time + ' ' + message + '</p>');
 }
 
 /**
@@ -310,7 +310,7 @@ function httpGetWebpageAsyncWithProxy(pageUrl, successCallback,
  */
 function buildPrerequisiteTable(classInfoArray) {
   let outputTable
-    = '<table id=prerequisite-table class="table">\n'
+    = '<table id=prerequisite-table class="table table-striped">\n'
     + '  <thead class="thead-dark">\n'
     + '    <tr>\n'
     + '      <th>Prerequisites</th>\n'
