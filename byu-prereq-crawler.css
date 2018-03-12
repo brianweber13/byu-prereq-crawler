@@ -5,6 +5,22 @@ p.error-output-text {
 p.info-output-text {
 }
 
-table, th, td {
-   border: 1px solid black;
+h1 {
+  padding: 1em;
+}
+
+.light-text {
+  color: #DDDDDD;
+}
+
+.background {
+  background-color: #DDDDDD;
+}
+
+.primary {
+  background-color: #28385E;
+}
+
+.accent {
+  background-color: #516C8D;
 }

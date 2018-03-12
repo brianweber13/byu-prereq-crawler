@@ -249,7 +249,7 @@ function parseClassPageFromSearchResultPage(className, htmlDocString,
     }
   }
   errorMessage = 'we couldn\'t find the class \'' + className
-    + '\'. Ensure that it\'s the exact name of the class in the'
+    + '\'. Ensure that it\'s the exact name of the class in the '
     + 'byu catalog and try again!';
   error(errorMessage);
   failureCallback(errorMessage);
@@ -293,9 +293,9 @@ function httpGetWebpageAsyncWithProxy(pageUrl, successCallback,
   xmlHttp.onerror = () => {
     console.log('error: ', xmlHttp);
     errorMessage = 'There was a problem retrieving ' + pageUrl
-      + '. Make sure you\'re connected to the internet and that'
-      + 'the website we\'re trying to retrieve is available. You'
-      + 'can also hit Ctrl-Shift-I (Cmd-Opt-I on mac) and check'
+      + '. Make sure you\'re connected to the internet and that '
+      + 'the website we\'re trying to retrieve is available. You '
+      + 'can also hit Ctrl-Shift-I (Cmd-Opt-I on mac) and check '
       + 'the console for more info.';
     error(errorMessage);
     failureCallback(errorMessage);
@@ -310,19 +310,22 @@ function httpGetWebpageAsyncWithProxy(pageUrl, successCallback,
  */
 function buildPrerequisiteTable(classInfoArray) {
   let outputTable
-    = '<table id=prerequisite-table>\n'
-    + '  <tr>\n'
-    + '    <th>Prerequisites</th>\n'
-    + '    <th>Class</th>\n'
-    + '    <th>Prerequisite For</th>\n'
-    + '  </tr>\n';
+    = '<table id=prerequisite-table class="table">\n'
+    + '  <thead class="thead-dark">\n'
+    + '    <tr>\n'
+    + '      <th>Prerequisites</th>\n'
+    + '      <th>Class</th>\n'
+    + '      <th>Prerequisite For</th>\n'
+    + '    </tr>\n';
+    + '  </thead>\n';
+    + '  <tbody>\n';
 
   for (let classInfo of classInfoArray) {
     // add new table row
-    outputTable += '  <tr>\n';
+    outputTable += '    <tr>\n';
 
     // add contents to prerequisite column
-    outputTable += '    <td>';
+    outputTable += '      <td>';
     for (let i = 0; i < classInfo.prerequisites.length; i++) {
       outputTable += classInfo.prerequisites[i];
       if (i < classInfo.prerequisites.length - 1) {
@@ -332,10 +335,10 @@ function buildPrerequisiteTable(classInfoArray) {
     outputTable += '</td>\n';
 
     // add the name of the class
-    outputTable += '    <td>' + classInfo.className + '</td>\n';
+    outputTable += '      <td>' + classInfo.className + '</td>\n';
 
     // add the classes this class is a prerequisite for
-    outputTable += '    <td>';
+    outputTable += '      <td>';
     for (let i = 0; i < classInfo.isPrerequisiteFor.length; i++) {
       outputTable += classInfo.isPrerequisiteFor[i];
       if (i < classInfo.isPrerequisiteFor.length - 1) {
@@ -345,9 +348,10 @@ function buildPrerequisiteTable(classInfoArray) {
     outputTable += '</td>\n';
 
     // close the row
-    outputTable += '  </tr>\n';
+    outputTable += '    </tr>\n';
   }
 
+  outputTable += '  </tbody>';
   outputTable += '</table>';
   return outputTable;
 }
