@@ -161,7 +161,7 @@ function parseClassList(inputString) {
   return inputStringArray;
 }
 
-// TODO: convert async funtions to use promises instead. These might be
+// TODO: convert async functions to use promises instead. These might be
 // helpful: 
 // https://softwareengineering.stackexchange.com/questions/302455/is-there-really-a-fundamental-difference-between-callbacks-and-promises
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Using_promises
@@ -226,7 +226,7 @@ function parseClassPrerequisitesFromClassPage(className, htmlDocString,
 }
 
 /**
- * @param {string} className - short classname as given by BYU
+ * @param {string} className - short class name as given by BYU
  * @param {string} htmlDocString - HTML doc for page of the search results when
  *   searching className on the BYU course catalog, as a string
  * @param {foundLinkToClassPageCallback} successCallback - given link to the
